@@ -1,0 +1,426 @@
+/* ===== Watch Page - Fullscreen Video ===== */
+.watchPage {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.watchPage.hideCursor {
+  cursor: none;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+/* ===== Loading Overlay ===== */
+.playOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 25;
+  cursor: pointer;
+}
+
+.playButton {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: rgba(16, 163, 127, 0.9);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 30px rgba(16, 163, 127, 0.4);
+}
+
+.playButton:hover {
+  transform: scale(1.1);
+  background: rgba(16, 163, 127, 1);
+  box-shadow: 0 6px 40px rgba(16, 163, 127, 0.6);
+}
+
+.playButton svg {
+  margin-left: 4px;
+}
+
+.playOverlay p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.loadingOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 20;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #10a37f;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingOverlay p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* ===== Error Overlay ===== */
+.errorOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 20;
+}
+
+.errorIcon {
+  font-size: 48px;
+}
+
+.errorOverlay p {
+  color: #ff6b6b;
+  font-size: 15px;
+  margin: 0;
+  max-width: 400px;
+  text-align: center;
+}
+
+.retryBtn {
+  padding: 10px 28px;
+  background: #10a37f;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.retryBtn:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+/* ===== Top Bar ===== */
+.topBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+  z-index: 30;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.25s ease;
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.liveTag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4146;
+  animation: livePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(239, 65, 70, 0.4); }
+  50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(239, 65, 70, 0); }
+}
+
+/* ===== Side Controls (Right) ===== */
+.sideControls {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 30;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.controlBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.controlBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.qualityBadge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #10a37f;
+  color: #fff;
+  line-height: 1.3;
+}
+
+/* ===== Quality Menu ===== */
+.qualityWrapper {
+  position: relative;
+}
+
+.qualityMenu {
+  position: absolute;
+  right: 56px;
+  top: 50%;
+  transform: translateY(-50%);
+  min-width: 180px;
+  background: rgba(20, 20, 20, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 8px 0;
+  animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-50%) translateX(8px); }
+  to { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+.qualityMenuTitle {
+  padding: 8px 16px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.qualityOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: left;
+}
+
+.qualityOption:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.qualityActive {
+  color: #10a37f;
+  font-weight: 600;
+}
+
+.bitrate {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 400;
+}
+
+/* ===== Visibility Transitions ===== */
+.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.topBar.hidden {
+  transform: translateY(-20px);
+}
+
+.sideControls.visible {
+  transform: translateY(-50%);
+}
+
+.sideControls.hidden {
+  transform: translateY(-50%) translateX(20px);
+}
+
+.bottomBar.hidden {
+  transform: translateY(20px);
+}
+
+/* ===== Bottom Bar - Telefe Logo ===== */
+.bottomBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  padding: 24px 24px 28px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+  z-index: 30;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.telefeLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.telefeLogo:hover {
+  background: rgba(0, 0, 0, 0.8);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: scale(1.03);
+}
+
+.telefeLogoImg {
+  display: none;
+}
+
+.telefeText {
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 1.5px;
+  text-transform: lowercase;
+}
+
+.telefeTextDim {
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 500;
+}
+
+.telefeLogo:hover .telefeText {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  .sideControls {
+    right: 12px;
+  }
+
+  .controlBtn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .topBar {
+    padding: 12px 16px;
+  }
+
+  .qualityMenu {
+    right: 50px;
+    min-width: 160px;
+  }
+
+  .bottomBar {
+    padding: 16px 16px 20px;
+  }
+
+  .telefeLogoImg {
+    height: 22px;
+  }
+}

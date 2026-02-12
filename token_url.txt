@@ -1,0 +1,1 @@
+﻿https://telefeappmitelefe1.akamaized.net/hls/live/2037985/appmitelefe/TOK/master.m3u8?hdnea=st=1770846433~exp=1770853633~acl=/hls/live/2037985/appmitelefe/TOK/*~hmac=4dd4848b605878295284acfd3ebc8f905df224135cad782280e6ef2d6fab1f28

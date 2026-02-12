@@ -1,0 +1,84 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ===== ChatGPT-inspired Dark Theme ===== */
+:root,
+[data-theme="dark"] {
+  --bg-primary: #0d0d0d;
+  --bg-secondary: #1a1a1a;
+  --nav-bg: rgba(13, 13, 13, 0.85);
+  --surface: rgba(255, 255, 255, 0.05);
+  --surface-hover: rgba(255, 255, 255, 0.1);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-primary: #ececec;
+  --text-secondary: #b4b4b4;
+  --text-tertiary: #7a7a7a;
+  --accent: #10a37f;
+  --accent-secondary: #1a7f64;
+  --accent-shadow: rgba(16, 163, 127, 0.25);
+  --accent-shadow-hover: rgba(16, 163, 127, 0.4);
+  --glow-color: #10a37f;
+  --badge-bg: rgba(16, 163, 127, 0.1);
+  --badge-border: rgba(16, 163, 127, 0.2);
+
+  font-family: 'Inter', 'Söhne', system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== ChatGPT-inspired Light Theme ===== */
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f7f8;
+  --nav-bg: rgba(255, 255, 255, 0.85);
+  --surface: rgba(0, 0, 0, 0.03);
+  --surface-hover: rgba(0, 0, 0, 0.06);
+  --border-color: rgba(0, 0, 0, 0.1);
+  --text-primary: #0d0d0d;
+  --text-secondary: #4a4a4a;
+  --text-tertiary: #8e8ea0;
+  --accent: #10a37f;
+  --accent-secondary: #1a7f64;
+  --accent-shadow: rgba(16, 163, 127, 0.2);
+  --accent-shadow-hover: rgba(16, 163, 127, 0.35);
+  --glow-color: #10a37f;
+  --badge-bg: rgba(16, 163, 127, 0.08);
+  --badge-border: rgba(16, 163, 127, 0.15);
+
+  color-scheme: light;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  transition: background 0.4s ease;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 0.85;
+}

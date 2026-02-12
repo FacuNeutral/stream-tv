@@ -1,0 +1,47 @@
+﻿=== FETCHING mitelefe.com/vivo ===
+Page saved, length: 51634
+
+=== SEARCHING FOR VIDEO QUALITY RELATED STRINGS ===
+
+--- FOUND: 'jwplayer' (3 matches) ---
+  <meta name="jwplayer-token" content="gzzqnKyQTFkwSoR8PosRrlHvwPIIu1ETj7OXlgl3lVZzZvSw">
+  <meta name="jwplayer-vast" content="https://pubads.g.doubleclick.net/gampad/ads?iu=/23303336001/mite
+  <meta name="jwplayer-id" content="00qhVpJS">
+
+--- FOUND: 'video-player' (4 matches) ---
+  "/assets/controllers/video-player-controller.js": "/assets/controllers/video-player-controller-ev2nz8B.js",
+  <section class="container py-4" data-controller="video-player">
+  data-action="video-player#changeTab"
+  ... (1 more)
+
+--- FOUND: 'master\.m3u8' (1 matches) ---
+  -url="https://telefeappmitelefe1.akamaized.net/hls/live/2037985/appmitelefe/TOK/master.m3u8"
+
+--- FOUND: 'akamaized' (1 matches) ---
+  data-player-url="https://telefeappmitelefe1.akamaized.net/hls/live/2037985/appmitelefe/TOK/master.m3u8"
+
+--- FOUND: 'hls.*live' (1 matches) ---
+  data-player-url="https://telefeappmitelefe1.akamaized.net/hls/live/2037985/appmitelefe/TOK/master.m3u8"
+
+=== SCRIPT TAGS ===
+  https://s1.adzonestatic.com/c/10038_telefe.2025.1.js
+  https://securepubads.g.doubleclick.net/tag/js/gpt.js
+
+=== LOOKING FOR VIDEO PLAYER CONTROLLER JS ===
+  video-player-controller.js
+  video-player-controller-ev2nz8B.js
+
+=== INLINE SCRIPT BLOCKS WITH VIDEO/STREAM REFERENCES ===
+
+--- SCRIPT BLOCK ( chars) ---
+
+{
+    "imports": {
+        "frontend": "/assets/frontend-YqQNvth.js",
+        "/assets/bootstrap.js": "/assets/bootstrap-xCO4u8H.js",
+        "/assets/provide_jquery.js": "/assets/provide_jquery-jTmzG9c.js",
+        "bootstrap": "/assets/vendor/bootstrap/bootstrap.index-HMS4Rhv.js",
+        "/assets/styles/frontend/main.css": "data:application/javascript,",
+        "@symfony/stimulus-bundle": "/assets/@symfony/stimulus-bundle/loader-V1GtHuK.js",
+        "@popperjs/core": "/assets/vendor/@popper
+... (truncated)

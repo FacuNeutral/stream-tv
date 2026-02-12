@@ -1,0 +1,180 @@
+.playerContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.videoWrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 */
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+/* Overlay */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #e91e63;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+}
+
+.errorIcon {
+  font-size: 48px;
+}
+
+.errorText {
+  color: #ff6b6b;
+  font-size: 16px;
+  text-align: center;
+  max-width: 400px;
+}
+
+.retryButton {
+  padding: 10px 24px;
+  background: #e91e63;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.retryButton:hover {
+  background: #c2185b;
+}
+
+/* Quality Selector */
+.qualitySelector {
+  position: absolute;
+  bottom: 60px;
+  right: 12px;
+  z-index: 20;
+}
+
+.qualityButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s;
+}
+
+.qualityButton:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.qualityIcon {
+  font-size: 16px;
+}
+
+.qualityLabel {
+  font-weight: 500;
+}
+
+.qualityMenu {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 8px;
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 180px;
+  backdrop-filter: blur(12px);
+}
+
+.qualityOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 16px;
+  background: none;
+  color: #ccc;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.qualityOption:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.qualityActive {
+  color: #e91e63;
+  font-weight: 600;
+}
+
+.bitrate {
+  font-size: 11px;
+  color: #888;
+  margin-left: 12px;
+}
