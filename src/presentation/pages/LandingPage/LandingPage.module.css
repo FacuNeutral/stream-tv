@@ -283,7 +283,7 @@
 }
 
 .ctaSecondary:disabled {
-  opacity: 0.7;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -293,24 +293,24 @@
   border-color: var(--accent);
 }
 
-.comingSoon {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 2px 8px;
-  border-radius: 6px;
-  background: var(--accent);
-  color: #fff;
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  animation: badgeBounce 2s ease-in-out infinite;
+.ctaInstalled {
+  border-color: #4caf50;
+  color: #4caf50;
+  opacity: 1 !important;
+  cursor: default;
 }
 
-@keyframes badgeBounce {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+.ctaInstalled:hover {
+  transform: none;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* ===== Floating Orbs ===== */

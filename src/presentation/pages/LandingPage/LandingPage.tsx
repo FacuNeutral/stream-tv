@@ -1,9 +1,11 @@
 import { useTheme } from '../../../context/ThemeContext'
+import { usePWAInstall } from '../../../application/hooks/usePWAInstall'
 import { Link } from 'react-router-dom'
 import styles from './LandingPage.module.css'
 
 export function LandingPage() {
   const { theme, toggleTheme } = useTheme()
+  const { canInstall, isInstalled, isInstalling, install } = usePWAInstall()
 
   return (
     <div className={styles.page}>
@@ -85,14 +87,35 @@ export function LandingPage() {
               Ver Telefe en Vivo
             </Link>
 
-            <button className={styles.ctaSecondary} disabled>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              Descargar App
-              <span className={styles.comingSoon}>Próximamente</span>
+            <button
+              className={`${styles.ctaSecondary} ${isInstalled ? styles.ctaInstalled : ''}`}
+              onClick={install}
+              disabled={!canInstall && !isInstalled}
+            >
+              {isInstalled ? (
+                <>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  App Instalada
+                </>
+              ) : isInstalling ? (
+                <>
+                  <svg className={styles.spinner} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                  </svg>
+                  Instalando...
+                </>
+              ) : (
+                <>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Descargar App
+                </>
+              )}
             </button>
           </div>
         </div>
