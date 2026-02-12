@@ -118,7 +118,7 @@ export function LandingPage() {
             Funciona exclusivamente como un <strong>acceso directo a la señal pública</strong> que
             <a href="https://mitelefe.com/" target="_blank" rel="noopener noreferrer"> Telefe </a>
             emite de forma abierta y gratuita en sus páginas oficiales.
-            El objetivo es facilitar la accesibilidad a dicha señal.
+            El objetivo es facilitar el acceso a personas con problemas de accesibilidad a dicho contenido web oficial.
             Para la experiencia completa del canal, recomendamos visitar
             <a href="https://mitelefe.com/" target="_blank" rel="noopener noreferrer"> mitelefe.com</a>.
           </p>
