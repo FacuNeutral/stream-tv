@@ -2,6 +2,10 @@
 .watchPage {
   position: fixed;
   inset: 0;
+  width: 100vw;
+  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
   background: #000;
   display: flex;
   align-items: center;
@@ -18,6 +22,43 @@
   height: 100%;
   object-fit: contain;
   background: #000;
+}
+
+/* Landscape: fill the entire screen */
+@media (orientation: landscape) and (max-height: 500px) {
+  .watchPage {
+    width: 100vw;
+    height: 100vh;
+    width: 100dvw;
+    height: 100dvh;
+  }
+
+  .video {
+    object-fit: cover;
+  }
+
+  .topBar {
+    padding: 8px 16px;
+  }
+
+  .sideControls {
+    right: 12px;
+  }
+
+  .controlBtn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .bottomBar {
+    padding: 8px 16px 12px;
+  }
+}
+
+@media (orientation: landscape) and (min-height: 501px) {
+  .video {
+    object-fit: contain;
+  }
 }
 
 /* ===== Loading Overlay ===== */

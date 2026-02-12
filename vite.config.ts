@@ -12,7 +12,7 @@ export default defineConfig({
         name: 'Telefe Stream',
         short_name: 'Telefe TV',
         description: 'Acceso directo a la señal pública de Telefe en vivo',
-        start_url: '/',
+        start_url: '/watch',
         display: 'standalone',
         orientation: 'any',
         background_color: '#0d0d0d',
