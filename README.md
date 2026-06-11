@@ -1,4 +1,5 @@
-# 📺 Telefe Stream
+# 01 Pequeñas Soluciones Útiles
+## 📺 Telefe Stream
 
 <p align="center">
   <img src="./assets/mundial.png" width="100%" alt="El Canal del Mundial" />
