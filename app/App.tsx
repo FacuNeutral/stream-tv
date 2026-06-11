@@ -38,11 +38,19 @@ export default function App() {
 
     try {
       // 1. Scrape the live page to find the current player URL
-      const pageResponse = await fetch('https://www.mitelefe.com/vivo', {
-        headers: {
-          'User-Agent': USER_AGENT,
-        },
-      });
+      const isWeb = Platform.OS === 'web';
+      let scrapeEndpoint = 'https://www.mitelefe.com/vivo';
+      if (isWeb) {
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        scrapeEndpoint = isLocalhost ? 'http://localhost:5173/api/vivo' : '/api/vivo';
+      }
+
+      const headers: HeadersInit = {};
+      if (!isWeb) {
+        headers['User-Agent'] = USER_AGENT;
+      }
+
+      const pageResponse = await fetch(scrapeEndpoint, { headers });
 
       if (pageResponse.ok) {
         const html = await pageResponse.text();
