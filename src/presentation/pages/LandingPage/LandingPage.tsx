@@ -78,7 +78,7 @@ export function LandingPage() {
             Un acceso directo para ver la señal pública de Telefe de forma rápida y sin complicaciones.
           </p>
 
-          {/* Two Options */}
+          {/* Three Options */}
           <div className={styles.ctaGroup}>
             <Link to="/watch" state={{ fromLanding: true }} className={styles.ctaPrimary}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
@@ -113,10 +113,18 @@ export function LandingPage() {
                     <polyline points="7 10 12 15 17 10" />
                     <line x1="12" y1="15" x2="12" y2="3" />
                   </svg>
-                  Descargar App
+                  Instalar Web App
                 </>
               )}
             </button>
+
+            <a href="/telefe-stream.apk" download className={styles.ctaMobile}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                <line x1="12" y1="18" x2="12.01" y2="18" />
+              </svg>
+              Descargar App Android
+            </a>
           </div>
         </div>
 

@@ -21,3 +21,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local JDK and SDK
+/jdk-21.0.2+13/
+/android-sdk/
+/.gradle/
+/install-sdk-packages.ps1
+/setup-android-sdk.ps1
+
