@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('screen');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 const DEFAULT_STREAM_URL = 'https://telefeappmitelefe1.akamaized.net/hls/live/2037985/appmitelefe/TOK/master.m3u8';
@@ -186,7 +186,7 @@ export default function App() {
   }, []);
 
   const handleOpenGitHub = () => {
-    Linking.openURL('https://github.com/FacuNeutral');
+    Linking.openURL('https://github.com/FacuNeutral/stream-tv');
   };
 
   const handleOpenTelefe = () => {
@@ -198,75 +198,79 @@ export default function App() {
       <View style={styles.playerContainer}>
         <StatusBar hidden={true} />
 
-        {streamUrl && (
-          <View style={styles.videoWrapper}>
-            <VideoView
-              ref={videoViewRef}
-              style={styles.videoView}
-              player={player}
-              allowsFullscreen={true}
-              allowsPictureInPicture={true}
-              nativeControls={false}
-            />
-            {/* Click interceptor to show/hide controls */}
-            <TouchableWithoutFeedback onPress={handlePlayerScreenPress}>
-              <View style={StyleSheet.absoluteFill} />
+        <View style={styles.contentContainer}>
+          {streamUrl && (
+            <View style={styles.videoWrapper}>
+              <VideoView
+                ref={videoViewRef}
+                style={styles.videoView}
+                player={player}
+                allowsFullscreen={true}
+                allowsPictureInPicture={true}
+                nativeControls={false}
+              />
+              {/* Click interceptor to show/hide controls */}
+              <TouchableWithoutFeedback onPress={handlePlayerScreenPress}>
+                <View style={StyleSheet.absoluteFill} />
+              </TouchableWithoutFeedback>
+            </View>
+          )}
+
+          {isLoading && (
+            <View style={styles.loaderOverlay}>
+              <ActivityIndicator size="large" color="#10a37f" />
+              <Text style={styles.loaderText}>Conectando con la señal...</Text>
+            </View>
+          )}
+
+          {error && (
+            <View style={styles.errorOverlay}>
+              <Text style={styles.errorIcon}>⚠️</Text>
+              <Text style={styles.errorText}>{error}</Text>
+              <TouchableOpacity style={styles.retryButton} onPress={fetchStreamToken}>
+                <Text style={styles.retryButtonText}>Reintentar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.retryButton, { marginTop: 12, backgroundColor: '#333' }]} onPress={() => setScreen('landing')}>
+                <Text style={styles.retryButtonText}>Volver</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {!started && !isLoading && !error && streamUrl && (
+            <TouchableWithoutFeedback onPress={handleStartPlayback}>
+              <View style={styles.playOverlay}>
+                <View style={styles.playButton}>
+                  <Text style={styles.playButtonText}>▶</Text>
+                </View>
+                <Text style={styles.playOverlayText}>Comenzar a reproducir</Text>
+              </View>
             </TouchableWithoutFeedback>
-          </View>
-        )}
+          )}
 
-        {isLoading && (
-          <View style={styles.loaderOverlay}>
-            <ActivityIndicator size="large" color="#10a37f" />
-            <Text style={styles.loaderText}>Conectando con la señal...</Text>
-          </View>
-        )}
-
-        {error && (
-          <View style={styles.errorOverlay}>
-            <Text style={styles.errorIcon}>⚠️</Text>
-            <Text style={styles.errorText}>{error}</Text>
-            <TouchableOpacity style={styles.retryButton} onPress={fetchStreamToken}>
-              <Text style={styles.retryButtonText}>Reintentar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.retryButton, { marginTop: 12, backgroundColor: '#333' }]} onPress={() => setScreen('landing')}>
-              <Text style={styles.retryButtonText}>Volver</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {!started && !isLoading && !error && streamUrl && (
-          <TouchableOpacity style={styles.playOverlay} onPress={handleStartPlayback}>
-            <View style={styles.playButton}>
-              <Text style={styles.playButtonText}>▶</Text>
+          {/* Top Control Bar overlay */}
+          {showControls && (
+            <View style={styles.topBar}>
+              <TouchableOpacity style={styles.backButton} onPress={() => setScreen('landing')}>
+                <Text style={styles.backButtonText}>← Volver</Text>
+              </TouchableOpacity>
+              <View style={styles.liveBadge}>
+                <View style={styles.liveDot} />
+                <Text style={styles.liveText}>EN VIVO — Telefe</Text>
+              </View>
             </View>
-            <Text style={styles.playOverlayText}>Comenzar a reproducir</Text>
-          </TouchableOpacity>
-        )}
+          )}
 
-        {/* Top Control Bar overlay */}
-        {showControls && (
-          <View style={styles.topBar}>
-            <TouchableOpacity style={styles.backButton} onPress={() => setScreen('landing')}>
-              <Text style={styles.backButtonText}>← Volver</Text>
+          {/* Bottom Mi Telefe button */}
+          {showLogo && started && (
+            <TouchableOpacity style={styles.telefeLogoContainer} onPress={handleOpenTelefe}>
+              <Image
+                source={require('./assets/logo-mi-telefe.png')}
+                style={styles.telefeLogoImage}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
-            <View style={styles.liveBadge}>
-              <View style={styles.liveDot} />
-              <Text style={styles.liveText}>EN VIVO — Telefe</Text>
-            </View>
-          </View>
-        )}
-
-        {/* Bottom Mi Telefe button */}
-        {showLogo && started && (
-          <TouchableOpacity style={styles.telefeLogoContainer} onPress={handleOpenTelefe}>
-            <Image
-              source={require('./assets/logo-mi-telefe.png')}
-              style={styles.telefeLogoImage}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        )}
+          )}
+        </View>
       </View>
     );
   }
@@ -626,11 +630,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   playOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: width,
+    height: height,
+    backgroundColor: 'rgba(0,0,0,0.75)',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 12,
+    zIndex: 99,
   },
   playButton: {
     width: 88,
@@ -660,6 +668,11 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     marginRight: 10,
+  },
+  contentContainer: {
+    width: '100%',
+    height: '100%',
+    position: 'relative',
   },
   videoWrapper: {
     width: '100%',

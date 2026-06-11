@@ -1,0 +1,44 @@
+﻿=== COMPLETE MASTER PLAYLIST ANALYSIS ===
+
+--- Quality Level 1 ---
+  Resolution:  1280x720
+  Bandwidth:   3185600 bps (3.19 Mbps)
+  Avg BW:      3185600 bps (3.19 Mbps)
+  Codecs:      avc1.4d401f,mp4a.40.2
+  Frame Rate:  25.000 fps
+  Variant URL: hdntl=exp=1770936448~acl=%2f*~data=hdntl~hmac=63c8d53ed609ec7a64f7ee7a1e86a48cbca2e1103a6b2393035f94e0900124ce/master-mtlf.m3u8
+
+--- Quality Level 2 ---
+  Resolution:  848x480
+  Bandwidth:   1645600 bps (1.65 Mbps)
+  Avg BW:      1645600 bps (1.65 Mbps)
+  Codecs:      avc1.77.30,mp4a.40.2
+  Frame Rate:  25.000 fps
+  Variant URL: hdntl=exp=1770936448~acl=%2f*~data=hdntl~hmac=63c8d53ed609ec7a64f7ee7a1e86a48cbca2e1103a6b2393035f94e0900124ce/master-mtlf1.m3u8
+
+--- Quality Level 3 ---
+  Resolution:  640x360
+  Bandwidth:   926932 bps (0.93 Mbps)
+  Avg BW:      926932 bps (0.93 Mbps)
+  Codecs:      avc1.77.30,mp4a.40.2
+  Frame Rate:  25.000 fps
+  Variant URL: hdntl=exp=1770936448~acl=%2f*~data=hdntl~hmac=63c8d53ed609ec7a64f7ee7a1e86a48cbca2e1103a6b2393035f94e0900124ce/master-mtlf2.m3u8
+
+--- Quality Level 4 ---
+  Resolution:  426x240
+  Bandwidth:   618932 bps (0.62 Mbps)
+  Avg BW:      618932 bps (0.62 Mbps)
+  Codecs:      avc1.4d4015,mp4a.40.2
+  Frame Rate:  25.000 fps
+  Variant URL: hdntl=exp=1770936448~acl=%2f*~data=hdntl~hmac=63c8d53ed609ec7a64f7ee7a1e86a48cbca2e1103a6b2393035f94e0900124ce/master-mtlf3.m3u8
+
+=== CODEC PROFILE ANALYSIS ===
+720p codec: avc1.4d401f = H.264 Main Profile Level 3.1
+480p codec: avc1.77.30  = H.264 Main Profile (legacy notation)
+360p codec: avc1.77.30  = H.264 Main Profile (legacy notation)
+240p codec: avc1.4d4015 = H.264 Main Profile Level 2.1
+
+For 1080p, typical codec strings would be:
+  avc1.640028 = H.264 High Profile Level 4.0
+  avc1.4d4028 = H.264 Main Profile Level 4.0
+Neither is present in this manifest.

@@ -1,0 +1,66 @@
+﻿
+=========================================
+TEST: CDN1 - Stream 2037985 (original)
+URL: https://telefeappmitelefe1.akamaized.net/hls/live/2037985/appmitelefe/TOK/master.m3u8
+=========================================
+Token obtained: https://telefeappmitelefe1.akamaized.net/hls/live/2037985/appmitelefe/TOK/master...
+
+PLAYLIST CONTENT:
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-INDEPENDENT-SEGMENTS
+#EXT-X-STREAM-INF:BANDWIDTH=3185600,AVERAGE-BANDWIDTH=3185600,CODECS="avc1.4d401f,mp4a.40.2",RESOLUTION=1280x720,FRAME-RATE=25.000
+hdntl=exp=1770936511~acl=%2f*~data=hdntl~hmac=41252fefba8b391ddedde1a81d29b310fa5c51d028f1899020dddafa3b3d1353/master-mtlf.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=1645600,AVERAGE-BANDWIDTH=1645600,CODECS="avc1.77.30,mp4a.40.2",RESOLUTION=848x480,FRAME-RATE=25.000
+hdntl=exp=1770936511~acl=%2f*~data=hdntl~hmac=41252fefba8b391ddedde1a81d29b310fa5c51d028f1899020dddafa3b3d1353/master-mtlf1.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=926932,AVERAGE-BANDWIDTH=926932,CODECS="avc1.77.30,mp4a.40.2",RESOLUTION=640x360,FRAME-RATE=25.000
+hdntl=exp=1770936511~acl=%2f*~data=hdntl~hmac=41252fefba8b391ddedde1a81d29b310fa5c51d028f1899020dddafa3b3d1353/master-mtlf2.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=618932,AVERAGE-BANDWIDTH=618932,CODECS="avc1.4d4015,mp4a.40.2",RESOLUTION=426x240,FRAME-RATE=25.000
+hdntl=exp=1770936511~acl=%2f*~data=hdntl~hmac=41252fefba8b391ddedde1a81d29b310fa5c51d028f1899020dddafa3b3d1353/master-mtlf3.m3u8
+
+
+=========================================
+TEST: CDN1 - Stream 2037986
+URL: https://telefeappmitelefe1.akamaized.net/hls/live/2037986/appmitelefe/TOK/master.m3u8
+=========================================
+Token obtained: https://telefeappmitelefe1.akamaized.net/hls/live/2037986/appmitelefe/TOK/master...
+PLAYLIST FETCH ERROR: Error en el servidor remoto: (403) Prohibido.
+
+=========================================
+TEST: CDN1 - Without TOK
+URL: https://telefeappmitelefe1.akamaized.net/hls/live/2037985/appmitelefe/master.m3u8
+=========================================
+Token obtained: https://telefeappmitelefe1.akamaized.net:443/hls/live/2037985/appmitelefe/master...
+PLAYLIST FETCH ERROR: Error en el servidor remoto: (403) Prohibido.
+
+=========================================
+TEST: CDN1 - apptelefe path
+URL: https://telefeappmitelefe1.akamaized.net/hls/live/2037985/apptelefe/TOK/master.m3u8
+=========================================
+Token obtained: https://telefeappmitelefe1.akamaized.net/hls/live/2037985/apptelefe/TOK/master.m...
+PLAYLIST FETCH ERROR: Error en el servidor remoto: (404) No se encontró.
+
+=========================================
+TEST: CDN1 - Stream 2037985-b (backup)
+URL: https://telefeappmitelefe1.akamaized.net/hls/live/2037985-b/appmitelefe/TOK/master.m3u8
+=========================================
+Token obtained: https://telefeappmitelefe1.akamaized.net/hls/live/2037985-b/appmitelefe/TOK/mast...
+
+PLAYLIST CONTENT:
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-INDEPENDENT-SEGMENTS
+#EXT-X-STREAM-INF:BANDWIDTH=3185600,AVERAGE-BANDWIDTH=3185600,CODECS="avc1.4d401f,mp4a.40.2",RESOLUTION=1280x720,FRAME-RATE=25.000
+hdntl=exp=1770936514~acl=%2f*~data=hdntl~hmac=0c2c431aa7afb7e865f8598321d553f333cc5bd105c96c86916326b3df64ab35/master-mtlf.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=1645600,AVERAGE-BANDWIDTH=1645600,CODECS="avc1.77.30,mp4a.40.2",RESOLUTION=848x480,FRAME-RATE=25.000
+hdntl=exp=1770936514~acl=%2f*~data=hdntl~hmac=0c2c431aa7afb7e865f8598321d553f333cc5bd105c96c86916326b3df64ab35/master-mtlf1.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=926932,AVERAGE-BANDWIDTH=926932,CODECS="avc1.77.30,mp4a.40.2",RESOLUTION=640x360,FRAME-RATE=25.000
+hdntl=exp=1770936514~acl=%2f*~data=hdntl~hmac=0c2c431aa7afb7e865f8598321d553f333cc5bd105c96c86916326b3df64ab35/master-mtlf2.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=618932,AVERAGE-BANDWIDTH=618932,CODECS="avc1.4d4015,mp4a.40.2",RESOLUTION=426x240,FRAME-RATE=25.000
+hdntl=exp=1770936514~acl=%2f*~data=hdntl~hmac=0c2c431aa7afb7e865f8598321d553f333cc5bd105c96c86916326b3df64ab35/master-mtlf3.m3u8
+
+
+
+=========================================
+INVESTIGATION COMPLETE
+=========================================
