@@ -5,7 +5,7 @@ export const TELEFE_STREAM_CONFIG: StreamConfig = {
   baseUrl:
     'https://telefeappmitelefe1.akamaized.net/hls/live/2037985/appmitelefe/TOK/master.m3u8',
   tokenEndpoint: '/api/tokenize',
-  referer: 'https://mitelefe.com/vivo',
+  referer: 'https://www.mitelefe.com/vivo',
 }
 
 export const TELEFE_CHANNEL: Channel = {

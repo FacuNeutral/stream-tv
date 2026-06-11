@@ -70,12 +70,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api/tokenize': {
-        target: 'https://mitelefe.com',
+        target: 'https://www.mitelefe.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/tokenize/, '/vidya/tokenize'),
         headers: {
-          Referer: 'https://mitelefe.com/vivo',
-          Origin: 'https://mitelefe.com',
+          Referer: 'https://www.mitelefe.com/vivo',
+          Origin: 'https://www.mitelefe.com',
         },
       },
     },
