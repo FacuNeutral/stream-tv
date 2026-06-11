@@ -68,6 +68,8 @@ export default defineConfig({
     }),
   ],
   server: {
+    host: true,
+    cors: true,
     proxy: {
       '/api/tokenize': {
         target: 'https://www.mitelefe.com',

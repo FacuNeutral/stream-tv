@@ -57,14 +57,30 @@ export default function App() {
 
     try {
       // 2. Tokenize the URL
-      const response = await fetch('https://www.mitelefe.com/vidya/tokenize', {
+      const isWeb = Platform.OS === 'web';
+      
+      // In web browsers, fetch via the proxy api to bypass CORS.
+      // On native platforms, fetch directly from Telefe's endpoint.
+      let tokenizeEndpoint = 'https://www.mitelefe.com/vidya/tokenize';
+      if (isWeb) {
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        tokenizeEndpoint = isLocalhost ? 'http://localhost:5173/api/tokenize' : '/api/tokenize';
+      }
+
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      };
+      
+      // Only set secure headers on Native (ignored or blocked by browsers)
+      if (!isWeb) {
+        headers['Referer'] = 'https://www.mitelefe.com/vivo';
+        headers['Origin'] = 'https://www.mitelefe.com';
+        headers['User-Agent'] = USER_AGENT;
+      }
+
+      const response = await fetch(tokenizeEndpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Referer': 'https://www.mitelefe.com/vivo',
-          'Origin': 'https://www.mitelefe.com',
-          'User-Agent': USER_AGENT,
-        },
+        headers: headers,
         body: JSON.stringify({ url: targetUrl }),
       });
 
