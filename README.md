@@ -1,4 +1,4 @@
-# #01 Pequeñas Soluciones Útiles
+# #01 Pequeñas Soluciones
 ## 📺 Telefe Stream
 
 <p align="center">
