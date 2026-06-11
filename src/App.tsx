@@ -8,8 +8,9 @@ function App() {
     <ThemeProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<WatchPage />} />
           <Route path="/watch" element={<WatchPage />} />
+          <Route path="/landing" element={<LandingPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

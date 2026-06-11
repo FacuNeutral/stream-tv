@@ -19,43 +19,65 @@ export function WatchPage() {
   } = useHlsPlayer(streamUrl)
 
   const [showControls, setShowControls] = useState(true)
-  const [isMuted, setIsMuted] = useState(false)
+  const [isMuted, setIsMuted] = useState(true)
   const [qualityOpen, setQualityOpen] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
-  const [started, setStarted] = useState(cameFromLanding)
+  const [started, setStarted] = useState(false)
+  const [volume, setVolume] = useState(1)
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const resetHideTimer = useCallback(() => {
-    setShowControls(true)
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
     hideTimerRef.current = setTimeout(() => {
       setShowControls(false)
       setQualityOpen(false)
-    }, 2000)
+    }, 10000) // 10 seconds timeout
   }, [])
 
-  useEffect(() => {
+  const showControlsMenu = useCallback(() => {
+    setShowControls(true)
     resetHideTimer()
+  }, [resetHideTimer])
+
+  useEffect(() => {
+    if (started) {
+      resetHideTimer()
+    } else {
+      setShowControls(true)
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
+    }
     return () => {
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
     }
-  }, [resetHideTimer])
+  }, [started, resetHideTimer])
 
   // Only start playing when user clicks the start button
   const handleStart = () => {
     const video = videoRef.current
     if (!video) return
     video.muted = false
-    video.volume = 1
+    video.volume = volume
     video.play().then(() => {
       setStarted(true)
       setIsMuted(false)
+      showControlsMenu()
+      if (!document.fullscreenElement) {
+        containerRef.current?.requestFullscreen().then(() => {
+          setIsFullscreen(true)
+        }).catch(() => {})
+      }
     }).catch(() => {
       video.muted = true
       video.play().then(() => {
         setStarted(true)
         setIsMuted(true)
+        showControlsMenu()
+        if (!document.fullscreenElement) {
+          containerRef.current?.requestFullscreen().then(() => {
+            setIsFullscreen(true)
+          }).catch(() => {})
+        }
       }).catch(() => {})
     })
   }
@@ -77,13 +99,45 @@ export function WatchPage() {
     })
   }, [cameFromLanding, videoRef, status])
 
-  const handleMouseMove = () => resetHideTimer()
-  const handleMouseLeave = () => {
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
-    hideTimerRef.current = setTimeout(() => {
-      setShowControls(false)
-      setQualityOpen(false)
-    }, 800)
+  // Robust Autoplay handler
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !streamUrl) return
+
+    const attemptPlay = () => {
+      video.muted = isMuted
+      video.play().catch((err) => {
+        console.warn("Autoplay attempt failed:", err)
+      })
+    }
+
+    attemptPlay()
+
+    video.addEventListener('loadedmetadata', attemptPlay)
+    video.addEventListener('canplay', attemptPlay)
+
+    return () => {
+      video.removeEventListener('loadedmetadata', attemptPlay)
+      video.removeEventListener('canplay', attemptPlay)
+    }
+  }, [streamUrl, status, isMuted, videoRef])
+
+  const handleMouseMove = () => {
+    if (showControls) {
+      resetHideTimer()
+    }
+  }
+
+  const handleScreenClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      if (showControls) {
+        setShowControls(false)
+        setQualityOpen(false)
+        if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
+      } else {
+        showControlsMenu()
+      }
+    }
   }
 
   const toggleMute = () => {
@@ -92,8 +146,24 @@ export function WatchPage() {
       videoRef.current.muted = next
       setIsMuted(next)
       if (!next) {
-        videoRef.current.volume = 1
+        videoRef.current.volume = volume > 0 ? volume : 1
+        if (volume === 0) setVolume(1)
         videoRef.current.play().catch(() => {})
+      }
+    }
+  }
+
+  const handleVolumeChange = (newVolume: number) => {
+    setVolume(newVolume)
+    const video = videoRef.current
+    if (video) {
+      video.volume = newVolume
+      if (newVolume === 0) {
+        video.muted = true
+        setIsMuted(true)
+      } else {
+        video.muted = false
+        setIsMuted(false)
       }
     }
   }
@@ -129,16 +199,18 @@ export function WatchPage() {
       ref={containerRef}
       className={`${styles.watchPage} ${!showControls ? styles.hideCursor : ''}`}
       onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
     >
       {/* Video */}
       <video
         ref={videoRef}
         className={styles.video}
-        autoPlay={cameFromLanding}
-        muted={cameFromLanding}
+        autoPlay={true}
+        muted={isMuted}
         playsInline
       />
+
+      {/* Click interceptor overlay */}
+      <div className={styles.clickOverlay} onClick={handleScreenClick} />
 
       {/* Start overlay - always shown until user clicks */}
       {!started && (
@@ -173,7 +245,7 @@ export function WatchPage() {
 
       {/* Top bar */}
       <div className={`${styles.topBar} ${showControls ? styles.visible : styles.hidden}`}>
-        <Link to="/" className={styles.backButton}>
+        <Link to="/landing" className={styles.backButton}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
@@ -206,22 +278,33 @@ export function WatchPage() {
           )}
         </button>
 
-        {/* Mute toggle */}
-        <button className={styles.controlBtn} onClick={toggleMute} title={isMuted ? 'Activar sonido' : 'Silenciar'}>
-          {isMuted ? (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-              <line x1="23" y1="9" x2="17" y2="15" />
-              <line x1="17" y1="9" x2="23" y2="15" />
-            </svg>
-          ) : (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-            </svg>
-          )}
-        </button>
+        {/* Mute toggle with Volume Slider */}
+        <div className={styles.volumeWrapper}>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            value={isMuted ? 0 : volume}
+            onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
+            className={styles.volumeSlider}
+          />
+          <button className={styles.controlBtn} onClick={toggleMute} title={isMuted ? 'Activar sonido' : 'Silenciar'}>
+            {isMuted ? (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <line x1="23" y1="9" x2="17" y2="15" />
+                <line x1="17" y1="9" x2="23" y2="15" />
+              </svg>
+            ) : (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+              </svg>
+            )}
+          </button>
+        </div>
 
         {/* Quality selector */}
         {qualityLevels.length > 0 && (

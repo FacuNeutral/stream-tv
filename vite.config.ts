@@ -7,6 +7,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
+      devOptions: {
+        enabled: true,
+      },
       includeAssets: ['icon.svg', 'icon-512.png', 'icon-192.png', 'icon-144.png'],
       manifest: {
         name: 'Telefe Stream',

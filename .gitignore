@@ -28,4 +28,5 @@ dist-ssr
 /.gradle/
 /install-sdk-packages.ps1
 /setup-android-sdk.ps1
+/dev-dist/
 

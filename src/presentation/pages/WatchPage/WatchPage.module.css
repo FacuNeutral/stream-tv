@@ -22,6 +22,7 @@
   height: 100%;
   object-fit: contain;
   background: #000;
+  pointer-events: none;
 }
 
 /* Landscape: fill the entire screen */
@@ -251,6 +252,7 @@
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: 8px;
   z-index: 30;
   transition: opacity 0.4s ease, transform 0.4s ease;
@@ -464,4 +466,60 @@
   .telefeLogoImg {
     height: 22px;
   }
+}
+
+/* ===== Click Overlay & Volume Slider CSS ===== */
+.clickOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: transparent;
+}
+
+.volumeWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.volumeSlider {
+  width: 0;
+  opacity: 0;
+  height: 4px;
+  cursor: pointer;
+  accent-color: #10a37f;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-right: 0;
+  -webkit-appearance: none;
+}
+
+.volumeWrapper:hover .volumeSlider {
+  width: 80px;
+  opacity: 1;
+  margin-right: 8px;
+}
+
+.volumeSlider::-webkit-slider-runnable-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
+}
+
+.volumeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #10a37f;
+  margin-top: -4px;
+  transition: transform 0.1s ease;
+}
+
+.volumeSlider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
 }

@@ -7,6 +7,17 @@ export function LandingPage() {
   const { theme, toggleTheme } = useTheme()
   const { canInstall, isInstalled, isInstalling, install } = usePWAInstall()
 
+  const handleInstallClick = async () => {
+    const success = await install()
+    if (!success) {
+      alert(
+        "Para instalar en Windows:\n\n" +
+        "1. Haz clic en el icono de instalación (pantalla con una flecha) en el extremo derecho de la barra de direcciones de tu navegador.\n" +
+        "2. O haz clic en el menú de tres puntos (opciones) del navegador y selecciona 'Instalar Telefe Stream'."
+      )
+    }
+  }
+
   return (
     <div className={styles.page}>
       {/* Navbar */}
@@ -89,8 +100,8 @@ export function LandingPage() {
 
             <button
               className={`${styles.ctaSecondary} ${isInstalled ? styles.ctaInstalled : ''}`}
-              onClick={install}
-              disabled={!canInstall && !isInstalled}
+              onClick={handleInstallClick}
+              disabled={isInstalled}
             >
               {isInstalled ? (
                 <>
@@ -113,7 +124,7 @@ export function LandingPage() {
                     <polyline points="7 10 12 15 17 10" />
                     <line x1="12" y1="15" x2="12" y2="3" />
                   </svg>
-                  Instalar Web App
+                  Instalar en Windows
                 </>
               )}
             </button>

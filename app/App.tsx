@@ -11,6 +11,8 @@ import {
   Linking,
   Dimensions,
   Platform,
+  TouchableWithoutFeedback,
+  Image,
 } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
 
@@ -20,16 +22,62 @@ const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 const DEFAULT_STREAM_URL = 'https://telefeappmitelefe1.akamaized.net/hls/live/2037985/appmitelefe/TOK/master.m3u8';
 
 export default function App() {
-  const [screen, setScreen] = useState<'landing' | 'player'>('landing');
+  const [screen, setScreen] = useState<'landing' | 'player'>('player');
   const [streamUrl, setStreamUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [started, setStarted] = useState(false);
+  const [showControls, setShowControls] = useState(true);
+  const [showLogo, setShowLogo] = useState(false);
+
+  const videoViewRef = useRef<VideoView>(null);
+  const controlsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const logoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Setup video player with an empty source initially
   const player = useVideoPlayer(streamUrl || '', (p) => {
     p.loop = false;
+    p.muted = true;
     p.play();
   });
+
+  const resetControlsTimer = () => {
+    setShowControls(true);
+    if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
+    controlsTimerRef.current = setTimeout(() => {
+      setShowControls(false);
+    }, 10000); // 10 seconds
+  };
+
+  const triggerLogoShow = () => {
+    setShowLogo(true);
+    if (logoTimerRef.current) clearTimeout(logoTimerRef.current);
+    logoTimerRef.current = setTimeout(() => {
+      setShowLogo(false);
+    }, 5000); // 5 seconds
+  };
+
+  const handleStartPlayback = () => {
+    player.muted = false;
+    player.play();
+    setStarted(true);
+    videoViewRef.current?.enterFullscreen();
+    triggerLogoShow();
+    resetControlsTimer();
+  };
+
+  const handlePlayerScreenPress = () => {
+    if (!started) return;
+    if (showControls) {
+      setShowControls(false);
+      setShowLogo(false);
+      if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
+      if (logoTimerRef.current) clearTimeout(logoTimerRef.current);
+    } else {
+      resetControlsTimer();
+      triggerLogoShow();
+    }
+  };
 
   const fetchStreamToken = async () => {
     setIsLoading(true);
@@ -105,6 +153,7 @@ export default function App() {
 
       setStreamUrl(tokenizedUrl);
       player.replace(tokenizedUrl);
+      player.muted = true;
       player.play();
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Error al conectar con la señal';
@@ -121,8 +170,20 @@ export default function App() {
     } else {
       player.pause();
       setStreamUrl(null);
+      setStarted(false);
+      setShowLogo(false);
+      setShowControls(true);
+      if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
+      if (logoTimerRef.current) clearTimeout(logoTimerRef.current);
     }
   }, [screen]);
+
+  useEffect(() => {
+    return () => {
+      if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
+      if (logoTimerRef.current) clearTimeout(logoTimerRef.current);
+    };
+  }, []);
 
   const handleOpenGitHub = () => {
     Linking.openURL('https://github.com/FacuNeutral');
@@ -136,9 +197,27 @@ export default function App() {
     return (
       <View style={styles.playerContainer}>
         <StatusBar hidden={true} />
+
+        {streamUrl && (
+          <View style={styles.videoWrapper}>
+            <VideoView
+              ref={videoViewRef}
+              style={styles.videoView}
+              player={player}
+              allowsFullscreen={true}
+              allowsPictureInPicture={true}
+              nativeControls={false}
+            />
+            {/* Click interceptor to show/hide controls */}
+            <TouchableWithoutFeedback onPress={handlePlayerScreenPress}>
+              <View style={StyleSheet.absoluteFill} />
+            </TouchableWithoutFeedback>
+          </View>
+        )}
+
         {isLoading && (
           <View style={styles.loaderOverlay}>
-            <ActivityIndicator size="large" color="#00a0e1" />
+            <ActivityIndicator size="large" color="#10a37f" />
             <Text style={styles.loaderText}>Conectando con la señal...</Text>
           </View>
         )}
@@ -156,25 +235,38 @@ export default function App() {
           </View>
         )}
 
-        {streamUrl && (
-          <VideoView
-            style={styles.videoView}
-            player={player}
-            allowsFullscreen={true}
-            allowsPictureInPicture={true}
-          />
+        {!started && !isLoading && !error && streamUrl && (
+          <TouchableOpacity style={styles.playOverlay} onPress={handleStartPlayback}>
+            <View style={styles.playButton}>
+              <Text style={styles.playButtonText}>▶</Text>
+            </View>
+            <Text style={styles.playOverlayText}>Comenzar a reproducir</Text>
+          </TouchableOpacity>
         )}
 
         {/* Top Control Bar overlay */}
-        <View style={styles.topBar}>
-          <TouchableOpacity style={styles.backButton} onPress={() => setScreen('landing')}>
-            <Text style={styles.backButtonText}>← Volver</Text>
-          </TouchableOpacity>
-          <View style={styles.liveBadge}>
-            <View style={styles.liveDot} />
-            <Text style={styles.liveText}>EN VIVO — Telefe</Text>
+        {showControls && (
+          <View style={styles.topBar}>
+            <TouchableOpacity style={styles.backButton} onPress={() => setScreen('landing')}>
+              <Text style={styles.backButtonText}>← Volver</Text>
+            </TouchableOpacity>
+            <View style={styles.liveBadge}>
+              <View style={styles.liveDot} />
+              <Text style={styles.liveText}>EN VIVO — Telefe</Text>
+            </View>
           </View>
-        </View>
+        )}
+
+        {/* Bottom Mi Telefe button */}
+        {showLogo && started && (
+          <TouchableOpacity style={styles.telefeLogoContainer} onPress={handleOpenTelefe}>
+            <Image
+              source={require('./assets/logo-mi-telefe.png')}
+              style={styles.telefeLogoImage}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        )}
       </View>
     );
   }
@@ -183,60 +275,65 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0a0a0c" />
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-        {/* Navbar */}
-        <View style={styles.navbar}>
-          <View style={styles.navBrand}>
-            <View style={styles.logoCircles}>
-              <View style={[styles.circle, styles.circle1]} />
-              <View style={[styles.circle, styles.circle2]} />
-              <View style={[styles.circle, styles.circle3]} />
+        <View style={styles.landingWrapper}>
+          {/* Navbar */}
+          <View style={styles.navbar}>
+            <View style={styles.navBrand}>
+              <Image
+                source={require('./assets/live-streaming.png')}
+                style={styles.logoImage}
+                resizeMode="contain"
+              />
+              <Text style={styles.navTitle}>Telefe Stream</Text>
             </View>
-            <Text style={styles.navTitle}>Telefe Stream</Text>
-          </View>
-          <TouchableOpacity onPress={handleOpenGitHub} style={styles.poweredBy}>
-            <Text style={styles.poweredByText}>by FacuNeutral</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Hero Section */}
-        <View style={styles.heroSection}>
-          <View style={styles.statusBadge}>
-            <View style={styles.badgeDot} />
-            <Text style={styles.badgeText}>Señal en Vivo</Text>
+            <TouchableOpacity onPress={handleOpenGitHub} style={styles.poweredBy}>
+              <Text style={styles.poweredByText}>by FacuNeutral</Text>
+            </TouchableOpacity>
           </View>
 
-          <Text style={styles.heroTitle}>
-            Telefe en vivo, {'\n'}
-            <Text style={styles.heroTitleAccent}>simple y accesible.</Text>
-          </Text>
+          {/* Main Hero & Content */}
+          <View style={styles.mainHeroContent}>
+            {/* Hero Section */}
+            <View style={styles.heroSection}>
+              <View style={styles.statusBadge}>
+                <View style={styles.badgeDot} />
+                <Text style={styles.badgeText}>Señal en Vivo</Text>
+              </View>
 
-          <Text style={styles.heroSubtitle}>
-            Un acceso directo para ver la señal pública de Telefe de forma rápida y sin complicaciones desde tu celular.
-          </Text>
+              <Text style={styles.heroTitle}>
+                Telefe en vivo, {'\n'}
+                <Text style={styles.heroTitleAccent}>simple y accesible.</Text>
+              </Text>
 
-          <TouchableOpacity style={styles.ctaPrimary} onPress={() => setScreen('player')}>
-            <Text style={styles.ctaPrimaryText}>▶ Ver Telefe en Vivo</Text>
-          </TouchableOpacity>
+              <Text style={styles.heroSubtitle}>
+                Un acceso directo para ver la señal pública de Telefe de forma rápida y sin complicaciones desde tu celular.
+              </Text>
 
-          <TouchableOpacity style={styles.ctaSecondary} onPress={handleOpenTelefe}>
-            <Text style={styles.ctaSecondaryText}>Visitar Web Oficial</Text>
-          </TouchableOpacity>
-        </View>
+              <TouchableOpacity style={styles.ctaPrimary} onPress={() => setScreen('player')}>
+                <Text style={styles.ctaPrimaryText}>▶ Ver Telefe en Vivo</Text>
+              </TouchableOpacity>
 
-        {/* Disclaimer */}
-        <View style={styles.disclaimer}>
-          <Text style={styles.disclaimerTitle}>⚠️ Información Importante</Text>
-          <Text style={styles.disclaimerText}>
-            Esta aplicación no ofrece ni distribuye contenido audiovisual propio. Funciona exclusivamente como un acceso directo a la señal pública que Telefe emite de forma abierta y gratuita en sus páginas oficiales.
-            El objetivo es facilitar el acceso a personas con problemas de accesibilidad a dicho contenido web oficial.
-          </Text>
-        </View>
+              <TouchableOpacity style={styles.ctaSecondary} onPress={handleOpenTelefe}>
+                <Text style={styles.ctaSecondaryText}>Visitar Web Oficial</Text>
+              </TouchableOpacity>
+            </View>
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            Telefe Stream — Solo un acceso directo a la señal pública de mitelefe.com
-          </Text>
+            {/* Disclaimer */}
+            <View style={styles.disclaimer}>
+              <Text style={styles.disclaimerTitle}>⚠️ Información Importante</Text>
+              <Text style={styles.disclaimerText}>
+                Esta aplicación no ofrece ni distribuye contenido audiovisual propio. Funciona exclusivamente como un acceso directo a la señal pública que Telefe emite de forma abierta y gratuita en sus páginas oficiales.
+                El objetivo es facilitar el acceso a personas con problemas de accesibilidad a dicho contenido web oficial.
+              </Text>
+            </View>
+          </View>
+
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>
+              Telefe Stream — Solo un acceso directo a la señal pública de mitelefe.com
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -249,7 +346,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#0a0a0c',
   },
   scrollContainer: {
-    paddingBottom: 40,
+    flexGrow: 1,
+  },
+  landingWrapper: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    minHeight: '100%',
+  },
+  mainHeroContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+    width: '100%',
   },
   navbar: {
     height: 64,
@@ -304,15 +414,16 @@ const styles = StyleSheet.create({
   heroSection: {
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingTop: 48,
-    paddingBottom: 32,
+    paddingTop: 24,
+    paddingBottom: 24,
+    width: '100%',
   },
   statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(239, 65, 70, 0.1)',
+    backgroundColor: 'rgba(16, 163, 127, 0.1)',
     borderWidth: 1,
-    borderColor: 'rgba(239, 65, 70, 0.2)',
+    borderColor: 'rgba(16, 163, 127, 0.2)',
     paddingVertical: 6,
     paddingHorizontal: 14,
     borderRadius: 20,
@@ -326,7 +437,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   badgeText: {
-    color: '#ef4146',
+    color: '#10a37f',
     fontSize: 12,
     fontWeight: '600',
   },
@@ -339,7 +450,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   heroTitleAccent: {
-    color: '#00a0e1',
+    color: '#10a37f',
   },
   heroSubtitle: {
     color: '#8e8ea0',
@@ -352,12 +463,12 @@ const styles = StyleSheet.create({
   ctaPrimary: {
     width: width - 48,
     maxWidth: 340,
-    backgroundColor: '#00a0e1',
+    backgroundColor: '#10a37f',
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#00a0e1',
+    shadowColor: '#10a37f',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
@@ -477,7 +588,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    zIndex: 5,
+    zIndex: 20,
   },
   backButton: {
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
@@ -513,5 +624,62 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 12,
     fontWeight: '600',
+  },
+  playOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 12,
+  },
+  playButton: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: '#10a37f',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#10a37f',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 15,
+    elevation: 6,
+    marginBottom: 16,
+  },
+  playButtonText: {
+    color: '#ffffff',
+    fontSize: 32,
+    marginLeft: 6,
+  },
+  playOverlayText: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  logoImage: {
+    width: 28,
+    height: 28,
+    marginRight: 10,
+  },
+  videoWrapper: {
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+  },
+  telefeLogoContainer: {
+    position: 'absolute',
+    bottom: 40,
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    zIndex: 15,
+  },
+  telefeLogoImage: {
+    width: 120,
+    height: 30,
   },
 });
